@@ -1,4 +1,4 @@
-window.onload = function() {
+window.onload = function () {
     var play = document.getElementById("play");
     var stop = document.getElementById("stop");
     var reset = document.getElementById("reset");
@@ -7,10 +7,10 @@ window.onload = function() {
     stop.addEventListener("click", stopTimer, false);
     reset.addEventListener("click", resetTimer, false);
 
-    var durationSeconds = parseInt(document.getElementById("duration").value) * 60;
+    var durationSeconds = parseInt(document.getElementById("duration").value);
     console.log(durationSeconds);
     var countDownSecs = durationSeconds;
-    var breakTime = parseInt(document.getElementById("restTime").value) * 60;
+    var breakTime = parseInt(document.getElementById("restTime").value);
 
     var message = document.getElementById("message");
 
@@ -21,27 +21,30 @@ window.onload = function() {
 
     var countDown;
 
-
     function countTime() {
+        
+        minutesLeft.innerHTML = countDownSecs;
 
-        minutesLeft.innerHTML = countDownSecs / 60;
-
-        if (state = "work") {
+        if (state === "work") {
             message.innerHTML = "Work in progress";
         }
         else {
             message.innerHTML = "Rest time";
         }
 
-        if (countDownSecs = 0) {
+        if (countDownSecs === 0) {
+            console.log("siin2");
             message.innerHTML = "";
-            if (state = "work") {
-                if (howManyCycles = 4) {
+            if (state === "work") {
+                if (howManyCycles === 4) {
                     howManyCycles = 0;
-                    countDownSecs = breakTime + 60 * 10;
+                    console.log("pikem puhkus");
+                    countDownSecs = breakTime * 10;
                     state = "rest";
                 }
                 else {
+                    console.log("lühem puhkus");
+
                     howManyCycles += 1;
                     countDownSecs = breakTime;
                     state = "rest";
@@ -50,24 +53,37 @@ window.onload = function() {
             else {
                 state = "work";
                 countDownSecs = durationSeconds;
-                minutesLeft = countDownSecs / 60;
+                minutesLeft = countDownSecs;
             }
         }
         else {
+            console.log(countDownSecs);
             countDownSecs = countDownSecs - 1;
         }
     }
 
     function start() {
-        countDown = setInterval(countTime(), 60 * 1000);
+        durationSeconds = parseInt(document.getElementById("duration").value);
+        breakTime = parseInt(document.getElementById("restTime").value);
+        countDownSecs = durationSeconds;
+        console.log(countDownSecs);
+        countDown = setInterval(countTime, 1000);
+        console.log("siin all")
+        //start.style.display = "none";
     }
 
     function stopTimer() {
         clearInterval(countDown);
+        countDownSecs = durationSeconds;
+        //start.style.display = "block";
     }
 
     function resetTimer() {
+        durationSeconds = parseInt(document.getElementById("duration").value);
+        breakTime = parseInt(document.getElementById("restTime").value);
         countDownSecs = durationSeconds;
+        minutesLeft.innerHTML = countDownSecs;
     }
+
 
 };
