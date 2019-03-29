@@ -1,24 +1,16 @@
-var countDown;
-var countDownBack;
-
 var bkg = chrome.extension.getBackgroundPage();
 
 window.onload = function () {
+
     var play = document.getElementById("play");
     var stop = document.getElementById("stop");
     var reset = document.getElementById("reset");
 
-    /*var request = new XMLHttpRequest();
-    request.open("GET", "https://www.toggl.com/api/v8/me", false);
-    request.setRequestHeader("Authorization", 'Basic '+btoa("517b382e066c407af2a1bc603f16b611:api_token"));
-    request.send();
-    // view request status
-    alert(request.status);*/
-    //response.innerHTML = request.responseText;
-
-
-    minutes = document.getElementById("minutes");
-    seconds = document.getElementById("seconds");
+    /*var cyclesMax = document.getElementById("cycles");
+    var biggerRest = document.getElementById("restMultiply");
+    var durationSeconds = document.getElementById("duration");
+    var description = document.getElementById("goal");
+    var breakTime = document.getElementById("restTime");*/
 
     message = document.getElementById("message");
 
@@ -26,12 +18,65 @@ window.onload = function () {
 
     minutesLeft = document.getElementById("minutesLeft");
 
+    goalDisplay = document.getElementById("goalDisplay");
+
 
     play.addEventListener("click", function () {
+
+        stop.style.visibility = 'visible';
+        reset.style.visibility = 'visible';
+        play.style.visibility = 'hidden';
+        startReset()
+    });
+    stop.addEventListener("click", function () {
+
+        stop.style.visibility = 'hidden';
+        reset.style.visibility = 'hidden';
+        play.style.visibility = 'visible';
+
+        bkg.stopTimer();
+    });
+    reset.addEventListener("click", function () {
+        bkg.deleteTimer();
+        startReset();
+
+    });
+
+    if (message !== null) {
+        message.innerHTML = message;
+    }
+
+    function refresh() {
+
+        //on käimas mingi sündmus, töö või puhkus
+        if (bkg.getDuration() > 0) {
+            stop.style.visibility = 'visible';
+            reset.style.visibility = 'visible';
+            play.style.visibility = 'hidden';
+        }
+        else {
+            stop.style.visibility = 'hidden';
+            reset.style.visibility = 'hidden';
+            play.style.visibility = 'visible';
+        }
+        minutesLeft.innerHTML = bkg.getCurrentTime().toString();
+        message.innerHTML = bkg.getCurrentMessage();
+
+        goalDisplay.innerHTML = bkg.getDescription();
+        /*cyclesMax.innerHTML = bkg.getCyclesMax().toString();
+        biggerRest.innerHTML = bkg.getBiggerRest().toString();
+
+        durationSeconds.innerHTML = bkg.getDuration().toString();
+        description.innerHTML = bkg.getDescription().toString();
+        breakTime.innerHTML = bkg.getBreakTIme().toString();*/
+
+        console.log("updaten")
+    }
+
+    function makeData() {
         durationSeconds = parseInt(document.getElementById("duration").value) * 60;
         console.log(durationSeconds);
         countDownSecs = durationSeconds;
-        breakTime = parseInt(document.getElementById("restTime").value) * 60;
 
         time = new Date().toISOString();
         time = time.substr(0, time.length - 5);
@@ -51,24 +96,27 @@ window.onload = function () {
         };
 
         time_entry = JSON.stringify(time_entry);
-        bkg.start(durationSeconds, breakTime, time_entry, "work", "Work in progress");
+        return time_entry
+    }
+
+    function startReset() {
+
+        description = document.getElementById("goal").value;
+
+        cyclesMax = document.getElementById("cycles").value;
+        biggerRest = document.getElementById("restMultiply").value;
+
+        breakTime = parseInt(document.getElementById("restTime").value) * 60;
+
+        durationSeconds = parseInt(document.getElementById("duration").value) * 60;
+        console.log(durationSeconds);
+        countDownSecs = durationSeconds;
+
+
+        bkg.start(durationSeconds, breakTime, makeData(), "work", "Work in progress", cyclesMax, biggerRest, description);
         minutesLeft.innerHTML = bkg.getCurrentTime().toString();
         message.innerHTML = bkg.getCurrentMessage();
-    });
-    stop.addEventListener("click", function () {
-        minutesLeft = 0;
-        message = "Nothing going on right now";
-        bkg.stopTimer();
-    });
-    reset.addEventListener("click", function () {
-        durationSeconds = savedCurrentDuration;
-        breakTime = savedCurrentRest;
-        bkg.resetTimer();
-    });
-
-    if (message !== null) {
-        message.innerHTML = message;
     }
-    minutesLeft.innerHTML = bkg.getCurrentTime().toString();
-    message.innerHTML = bkg.getCurrentMessage();
+
+    setInterval(refresh, 100);
 };

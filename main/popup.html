@@ -11,20 +11,26 @@
 <div>
     <form>
         My main goal: <label for="goal"></label><input type="text" name="goal" id="goal"><br>
-        Duration: <label for="duration"></label><input type="number" name="duration" value="25" id="duration"><br>
-        Rest time: <label for="restTime"></label><input type="number" name="durationRest" value="5" id="restTime"><br>
+        Duration (minutes): <label for="duration"></label><input type="number" name="duration" value="25" id="duration"><br>
+        Rest time (minutes): <label for="restTime"></label><input type="number" name="durationRest" value="5" id="restTime"><br>
+        Times greater bigger rest time: <label for="restMultiply"></label><input type="number" name="restMultiply"
+                                                                                 value="10" id="restMultiply"><br>
+        After how many cycles bigger rest: <label for="cycles"></label><input type="number" name="cycles" value="3"
+                                                                              id="cycles"><br>
+
     </form>
 
     <button id="play">Play</button>
     <button id="stop">Stop</button>
     <button id="reset">Reset</button>
-    <button id="options">Options</button>
 
-        <br>
+    <br>
 
-    <span id="minutesLeft">0</span>
+    <span id="minutesLeft">0</span> min left
     <br>
     <span id="message">Nothing going on right now</span>
+    <br>
+    Task at hand: <span id="goalDisplay"></span>
 </div>
 </body>
 </html>
