@@ -95,7 +95,7 @@ function start(seconds, breakSecs, time, stateIn, messageIn, cycleMaxIn, restBig
 
     var postRequest = new XMLHttpRequest();
     postRequest.open("POST", "https://www.toggl.com/api/v8/time_entries/start", false);
-    postRequest.setRequestHeader("Authorization", 'Basic ' + btoa("517b382e066c407af2a1bc603f16b611:api_token")); //<<<<---- replace token ID with your own from Toggl profile page
+    postRequest.setRequestHeader("Authorization", 'Basic ' + btoa("8324y823yfdbfjsiawe3:api_token")); //<<<<---- replace token ID with your own from Toggl profile page
     postRequest.setRequestHeader("Content-Type", "application/json");
     postRequest.send(time);
 
@@ -113,7 +113,7 @@ function stopTimer() {
     var putRequest = new XMLHttpRequest();
     var HTTPString = "https://www.toggl.com/api/v8/time_entries/" + currentId.toString() + "/stop";
     putRequest.open("PUT", HTTPString, false);
-    putRequest.setRequestHeader("Authorization", 'Basic ' + btoa("517b382e066c407af2a1bc603f16b611:api_token"));//<<<<---- replace token ID with your own from Toggl profile page
+    putRequest.setRequestHeader("Authorization", 'Basic ' + btoa("8324y823yfdbfjsiawe3:api_token"));//<<<<---- replace token ID with your own from Toggl profile page
     putRequest.setRequestHeader("Content-Type", "application/json");
     putRequest.send();
 
@@ -135,7 +135,7 @@ function deleteTimer() {
     var delRequest = new XMLHttpRequest();
     var HTTPString = "https://www.toggl.com/api/v8/time_entries/" + currentId.toString();
     delRequest.open("DELETE", HTTPString, false);
-    delRequest.setRequestHeader("Authorization", 'Basic ' + btoa("517b382e066c407af2a1bc603f16b611:api_token"));//<<<<---- replace token ID with your own from Toggl profile page
+    delRequest.setRequestHeader("Authorization", 'Basic ' + btoa("8324y823yfdbfjsiawe3:api_token"));//<<<<---- replace token ID with your own from Toggl profile page
     delRequest.send();
 
 
@@ -218,7 +218,7 @@ function getBreakTIme() {
 function authenticate() {
     var getRequest = new XMLHttpRequest();
     getRequest.open("GET", "https://www.toggl.com/api/v8/me", false);
-    getRequest.setRequestHeader("Authorization", 'Basic ' + btoa("517b382e066c407af2a1bc603f16b611:api_token"));//<<<<---- replace token ID with your own from Toggl profile page
+    getRequest.setRequestHeader("Authorization", 'Basic ' + btoa("8324y823yfdbfjsiawe3:api_token"));//<<<<---- replace token ID with your own from Toggl profile page
     getRequest.send();
 
     wid = JSON.parse(getRequest.response)["wid"];
