@@ -3,10 +3,32 @@
   "version": "1.0",
   "description": "Build an Extension!",
   "manifest_version": 2,
-  "icons" : {"tomato":"tomato.png"},
-  "browser_action":{
-    "default_icon":"tomato.png",
-    "default_popup":"popup.html",
-    "permissions":["activeTab"]
-  }
+  "icons": {
+    "128": "Tomato.png"
+  },
+  "browser_action": {
+    "default_icon": "Tomato.png",
+    "default_popup": "popup.html",
+    "permissions": [
+      "activeTab","tabs","background"
+    ]
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "css": [
+        "style.css"
+      ],
+      "scripts":["background.js"]}
+
+  ]
 }

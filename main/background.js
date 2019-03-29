@@ -1,89 +1,146 @@
-window.onload = function () {
-    var play = document.getElementById("play");
-    var stop = document.getElementById("stop");
-    var reset = document.getElementById("reset");
+var durationSeconds = 0;
+var countDownSecs;
+var breakTime;
+var time;
+var description;
+var time_entry;
+var minutes;
+var seconds;
+var message = "Nothing going on right now";
+var howManyCycles;
+var state;
+var minutesLeft;
+var countDown;
+var countDownBack;
+var currentId;
 
-    play.addEventListener("click", start, false);
-    stop.addEventListener("click", stopTimer, false);
-    reset.addEventListener("click", resetTimer, false);
+var picturesArray;
 
-    var durationSeconds = parseInt(document.getElementById("duration").value);
-    console.log(durationSeconds);
-    var countDownSecs = durationSeconds;
-    var breakTime = parseInt(document.getElementById("restTime").value);
 
-    var message = document.getElementById("message");
+var savedCurrentDuration;
+var savedCurrentRest;
 
-    var howManyCycles = 0;
-    var state = "work";
+function countTime() {
 
-    var minutesLeft = document.getElementById("minutesLeft");
+    //minutesLeft.innerHTML = durationSeconds;
 
-    var countDown;
+    minutes = Math.floor(durationSeconds / 60);
+    seconds = durationSeconds - minutes * 60;
 
-    function countTime() {
-        
-        minutesLeft.innerHTML = countDownSecs;
+    //if minutes are less than 10, add 0 before, else add "", same for seconds
+    minutes = (minutes < 10 ? "0" : "") + minutes;
+    seconds = (seconds < 10 ? "0" : "") + seconds;
 
+    if (state === "work") {
+        message = "Work in progress";
+    }
+    else {
+        message = "Rest time";
+    }
+
+    if (durationSeconds === 0) {
+        console.log("siin2");
+        message = "";
         if (state === "work") {
-            message.innerHTML = "Work in progress";
-        }
-        else {
-            message.innerHTML = "Rest time";
-        }
-
-        if (countDownSecs === 0) {
-            console.log("siin2");
-            message.innerHTML = "";
-            if (state === "work") {
-                if (howManyCycles === 4) {
-                    howManyCycles = 0;
-                    console.log("pikem puhkus");
-                    countDownSecs = breakTime * 10;
-                    state = "rest";
-                }
-                else {
-                    console.log("lühem puhkus");
-
-                    howManyCycles += 1;
-                    countDownSecs = breakTime;
-                    state = "rest";
-                }
+            if (howManyCycles === 4) {
+                howManyCycles = 0;
+                console.log("pikem puhkus");
+                durationSeconds = breakTime * 10 * 60;
+                state = "rest";
             }
             else {
-                state = "work";
-                countDownSecs = durationSeconds;
-                minutesLeft = countDownSecs;
+                console.log("lühem puhkus");
+                getPictures();
+                howManyCycles += 1;
+                durationSeconds = breakTime;
+                state = "rest";
             }
         }
         else {
-            console.log(countDownSecs);
-            countDownSecs = countDownSecs - 1;
+            state = "work";
+            durationSeconds = savedCurrentDuration;
+            minutesLeft = savedCurrentDuration;
         }
     }
-
-    function start() {
-        durationSeconds = parseInt(document.getElementById("duration").value);
-        breakTime = parseInt(document.getElementById("restTime").value);
-        countDownSecs = durationSeconds;
-        console.log(countDownSecs);
-        countDown = setInterval(countTime, 1000);
-        console.log("siin all")
-        //start.style.display = "none";
+    else {
+        console.log(durationSeconds);
+        durationSeconds = durationSeconds - 1;
     }
+}
 
-    function stopTimer() {
-        clearInterval(countDown);
-        countDownSecs = durationSeconds;
-        //start.style.display = "block";
+function start(seconds, breakSecs, time, stateIn, messageIn) {
+
+    //console.log(request);
+
+    durationSeconds = seconds;
+    breakTime = breakSecs;
+    state = stateIn;
+    message = messageIn;
+
+    savedCurrentDuration = seconds;
+    savedCurrentRest = breakSecs;
+
+    var postRequest = new XMLHttpRequest();
+    postRequest.open("POST", "https://www.toggl.com/api/v8/time_entries/start", false);
+    postRequest.setRequestHeader("Authorization", 'Basic ' + btoa("517b382e066c407af2a1bc603f16b611:api_token"));
+    postRequest.setRequestHeader("Content-Type", "application/json");
+    postRequest.send(time);
+
+    currentId = JSON.parse(postRequest.response);
+    currentId = currentId["data"];
+    currentId = currentId["id"];
+    console.log(currentId);
+
+    countDownSecs = durationSeconds;
+    console.log(countDownSecs);
+    countDown = setInterval(countTime, 1000);
+    //window.open("display.html");
+    console.log("siin all")
+    //start.style.display = "none";
+}
+
+function stopTimer() {
+    clearInterval(countDown);
+    var putRequest = new XMLHttpRequest();
+    var HTTPString = "https://www.toggl.com/api/v8/time_entries/" + currentId.toString() + "/stop";
+    putRequest.open("PUT", HTTPString, false);
+    putRequest.setRequestHeader("Authorization", 'Basic ' + btoa("517b382e066c407af2a1bc603f16b611:api_token"));
+    putRequest.setRequestHeader("Content-Type", "application/json");
+    putRequest.send();
+
+    //durationSeconds = 0;
+    //start.style.display = "block";
+
+
+}
+
+function resetTimer() {
+    durationSeconds = savedCurrentDuration;
+    breakTime = savedCurrentRest;
+}
+
+function getCurrentTime() {
+    if (durationSeconds !== null) {
+        return Math.ceil(durationSeconds / 60);
     }
-
-    function resetTimer() {
-        durationSeconds = parseInt(document.getElementById("duration").value);
-        breakTime = parseInt(document.getElementById("restTime").value);
-        countDownSecs = durationSeconds;
-        minutesLeft.innerHTML = countDownSecs;
+    else {
+        return 0;
     }
+}
 
+function getCurrentMessage() {
+    if (message !== null) {
+        return message.toString();
+    }
+    return "Nothing going on right now"
+}
+function getPictures(){
+    //https://dog.ceo/api/breeds/image/random/3 Fetch!
+    var imageGetRequest = new XMLHttpRequest();
+    imageGetRequest.open("GET","https://dog.ceo/api/breeds/image/random/3");
+    imageGetRequest.setRequestHeader("Content-Type", "application/json");
+    imageGetRequest.send();
 
-};
+    picturesArray = imageGetRequest;
+    console.log(picturesArray);
+}

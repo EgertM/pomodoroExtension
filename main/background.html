@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Title</title>
-    <script src="popup.js"></script>
+    <script src="background.js"></script>
 </head>
 <body>
 <div>
+    My main goal: <input type="text" name="goal" value="goal description" id="goal"><br>
     <form>
-        My main goal: <label for="goal"></label><input type="text" name="goal" id="goal"><br>
-        Duration: <label for="duration"></label><input type="number" name="duration" value="25" id="duration"><br>
-        Rest time: <label for="restTime"></label><input type="number" name="durationRest" value="5" id="restTime"><br>
+        Duration: <input type="number" name="duration" value="25" id="duration"><br>
+        Rest time: <input type="number" name="durationRest" value="5" id="restTime"><br>
     </form>
 
     <button id="play">Play</button>
@@ -20,11 +20,13 @@
     <button id="reset">Reset</button>
     <button id="options">Options</button>
 
-        <br>
+    <br>
 
     <span id="minutesLeft">0</span>
+    <span id="separate">:</span>
+    <span id="seconds">0</span>
     <br>
-    <span id="message">Nothing going on right now</span>
+    <span id="message"></span>
 </div>
 </body>
 </html>
