@@ -1,9 +1,9 @@
 var durationSeconds = 0;
-var countDownSecs;
 
 var breakTime;
 var description; //goal
 
+var wid;
 
 //work or rest
 var message = "Nothing going on right now";
@@ -34,7 +34,6 @@ var savedCurrentRest; //to keep in mind when reseting
 //overall counter logic for tracking time
 function countTime() {
 
-    //minutesLeft.innerHTML = durationSeconds;
 
     if (state === "work") {
         message = "Work in progress";
@@ -44,7 +43,6 @@ function countTime() {
     }
 
     if (durationSeconds === 0) {
-        console.log("siin2");
         message = "";
         if (state === "work") {
             console.log(howManyCycles);
@@ -54,12 +52,12 @@ function countTime() {
                 console.log("biggerRest: " + biggerRest);
                 getPictures();
                 howManyCycles = 1;
-                console.log("pikem puhkus");
+                console.log("longer rest");
                 durationSeconds = breakTime * biggerRest;
                 state = "rest";
             }
             else {
-                console.log("lühem puhkus");
+                console.log("shorter rest");
                 howManyCycles += 1;
                 durationSeconds = breakTime;
                 state = "rest";
@@ -77,6 +75,7 @@ function countTime() {
         durationSeconds = durationSeconds - 1;
     }
 }
+
 //start a pomodoro, parameters are sent from popup.js
 function start(seconds, breakSecs, time, stateIn, messageIn, cycleMaxIn, restBigIn, descIn) {
 
@@ -96,29 +95,25 @@ function start(seconds, breakSecs, time, stateIn, messageIn, cycleMaxIn, restBig
 
     var postRequest = new XMLHttpRequest();
     postRequest.open("POST", "https://www.toggl.com/api/v8/time_entries/start", false);
-    postRequest.setRequestHeader("Authorization", 'Basic ' + btoa("517b382e066c407af2a1bc603f16b611:api_token"));
+    postRequest.setRequestHeader("Authorization", 'Basic ' + btoa("517b382e066c407af2a1bc603f16b611:api_token")); //<<<<---- replace token ID with your own from Toggl profile page
     postRequest.setRequestHeader("Content-Type", "application/json");
     postRequest.send(time);
 
     currentId = JSON.parse(postRequest.response);
     currentId = currentId["data"];
     currentId = currentId["id"];
-    console.log(currentId);
+    //console.log(currentId);
 
-    countDownSecs = durationSeconds;
-    console.log(countDownSecs);
     countDown = setInterval(countTime, 1000);
-    //window.open("display.html");
-    console.log("siin all")
-    //start.style.display = "none";
 }
+
 //finish a pomodoro
 function stopTimer() {
     clearInterval(countDown);
     var putRequest = new XMLHttpRequest();
     var HTTPString = "https://www.toggl.com/api/v8/time_entries/" + currentId.toString() + "/stop";
     putRequest.open("PUT", HTTPString, false);
-    putRequest.setRequestHeader("Authorization", 'Basic ' + btoa("517b382e066c407af2a1bc603f16b611:api_token"));
+    putRequest.setRequestHeader("Authorization", 'Basic ' + btoa("517b382e066c407af2a1bc603f16b611:api_token"));//<<<<---- replace token ID with your own from Toggl profile page
     putRequest.setRequestHeader("Content-Type", "application/json");
     putRequest.send();
 
@@ -130,18 +125,17 @@ function stopTimer() {
 
     description = "";
     breakTime = 0;
-    //durationSeconds = 0;
-    //start.style.display = "block";
 
 
 }
+
 //delete current pomodoro and reset all values
 function deleteTimer() {
     clearInterval(countDown);
     var delRequest = new XMLHttpRequest();
     var HTTPString = "https://www.toggl.com/api/v8/time_entries/" + currentId.toString();
     delRequest.open("DELETE", HTTPString, false);
-    delRequest.setRequestHeader("Authorization", 'Basic ' + btoa("517b382e066c407af2a1bc603f16b611:api_token"));
+    delRequest.setRequestHeader("Authorization", 'Basic ' + btoa("517b382e066c407af2a1bc603f16b611:api_token"));//<<<<---- replace token ID with your own from Toggl profile page
     delRequest.send();
 
 
@@ -163,6 +157,7 @@ function getCurrentTime() {
         return 0;
     }
 }
+
 //returns current message
 function getCurrentMessage() {
     if (message !== null) {
@@ -176,9 +171,10 @@ function openTab() {
     newTab = chrome.windows.create({
         url: chrome.runtime.getURL("display.html")
     });
-    console.log(picturesArray);
+    //console.log(picturesArray);
 
 }
+
 //fetches dog pictures from the API
 function getPictures() {
     //https://dog.ceo/api/breeds/image/random/3 Fetch!
@@ -188,7 +184,7 @@ function getPictures() {
     imageGetRequest.send();
 
     picturesArray = JSON.parse(imageGetRequest.response)["message"];
-    console.log(picturesArray);
+    //console.log(picturesArray);
     openTab();
 }
 
@@ -217,4 +213,17 @@ function getDescription() {
 
 function getBreakTIme() {
     return breakTime;
+}
+
+function authenticate() {
+    var getRequest = new XMLHttpRequest();
+    getRequest.open("GET", "https://www.toggl.com/api/v8/me", false);
+    getRequest.setRequestHeader("Authorization", 'Basic ' + btoa("517b382e066c407af2a1bc603f16b611:api_token"));//<<<<---- replace token ID with your own from Toggl profile page
+    getRequest.send();
+
+    wid = JSON.parse(getRequest.response)["wid"];
+}
+
+function getWid() {
+    return wid;
 }
