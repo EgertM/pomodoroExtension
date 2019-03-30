@@ -6,7 +6,7 @@ Pomodoro time tracker that has been synchronized with Toggl API
 
 Download project .zip and then navigate to "chrome://extension", turn on developer mode and add "main" folder there as your new extension
 
-Notes
+## Notes
 Make sure you change the Toggl api token inside the background.js to your own, or else it wont work
 
 
