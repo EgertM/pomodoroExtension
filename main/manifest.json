@@ -10,7 +10,9 @@
     "default_icon": "Tomato.png",
     "default_popup": "popup.html",
     "permissions": [
-      "activeTab","tabs","background"
+      "activeTab",
+      "tabs",
+      "background"
     ]
   },
   "background": {
@@ -28,7 +30,9 @@
       "css": [
         "style.css"
       ],
-      "scripts":["background.js"]}
-
+      "scripts": [
+        "background.js"
+      ]
+    }
   ]
 }

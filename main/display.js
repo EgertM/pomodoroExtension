@@ -9,13 +9,13 @@ window.onload = function () {
         displayImage();
     });
 
-    image.src = bkg.getPicsArray()[imageCounter];
-    imageCounter += 1;
+    displayImage();
 
 };
 
 //set the image source
 function displayImage() {
+    //console.log(imageCounter);
     image.src = bkg.getPicsArray()[imageCounter];
     imageCounter += 1;
 }

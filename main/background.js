@@ -1,7 +1,9 @@
 var durationSeconds = 0;
 
-var breakTime;
+var breakTime; //break time seconds
 var description; //goal
+
+var yourToken = "1971800d4d82861d8f2c1651fea4d212"+":api_token";//<--- replace the token part with your own
 
 var wid;
 
@@ -14,9 +16,9 @@ var cyclesMax; //how many work cycles we need to do for bigger rest
 
 var state; //work or rest state
 
-var minutesLeft;
-var countDown;
-var goalDisplay;
+var minutesLeft; //global var for remembering minutes left for popup.html
+var countDown; //var for saving countTime() function
+var goalDisplay; //goal display in popup
 
 var currentId; // ID of time entry
 
@@ -88,14 +90,14 @@ function start(seconds, breakSecs, time, stateIn, messageIn, cycleMaxIn, restBig
     state = stateIn;
     message = messageIn;
 
-    console.log("max cycles:" + cyclesMax);
+    console.log("max cycles: " + cyclesMax);
 
     savedCurrentDuration = seconds;
     savedCurrentRest = breakSecs;
 
     var postRequest = new XMLHttpRequest();
     postRequest.open("POST", "https://www.toggl.com/api/v8/time_entries/start", false);
-    postRequest.setRequestHeader("Authorization", 'Basic ' + btoa("8324y823yfdbfjsiawe3:api_token")); //<<<<---- replace token ID with your own from Toggl profile page
+    postRequest.setRequestHeader("Authorization", 'Basic ' + btoa(yourToken)); //<<<<---- replace token ID with your own from Toggl profile page
     postRequest.setRequestHeader("Content-Type", "application/json");
     postRequest.send(time);
 
@@ -113,7 +115,7 @@ function stopTimer() {
     var putRequest = new XMLHttpRequest();
     var HTTPString = "https://www.toggl.com/api/v8/time_entries/" + currentId.toString() + "/stop";
     putRequest.open("PUT", HTTPString, false);
-    putRequest.setRequestHeader("Authorization", 'Basic ' + btoa("8324y823yfdbfjsiawe3:api_token"));//<<<<---- replace token ID with your own from Toggl profile page
+    putRequest.setRequestHeader("Authorization", 'Basic ' + btoa(yourToken));//<<<<---- replace token ID with your own from Toggl profile page
     putRequest.setRequestHeader("Content-Type", "application/json");
     putRequest.send();
 
@@ -135,7 +137,7 @@ function deleteTimer() {
     var delRequest = new XMLHttpRequest();
     var HTTPString = "https://www.toggl.com/api/v8/time_entries/" + currentId.toString();
     delRequest.open("DELETE", HTTPString, false);
-    delRequest.setRequestHeader("Authorization", 'Basic ' + btoa("8324y823yfdbfjsiawe3:api_token"));//<<<<---- replace token ID with your own from Toggl profile page
+    delRequest.setRequestHeader("Authorization", 'Basic ' + btoa(yourToken));//<<<<---- replace token ID with your own from Toggl profile page
     delRequest.send();
 
 
@@ -183,6 +185,7 @@ function getPictures() {
     imageGetRequest.setRequestHeader("Content-Type", "application/json");
     imageGetRequest.send();
 
+    imageCounter = 0; //resetting image counter
     picturesArray = JSON.parse(imageGetRequest.response)["message"];
     //console.log(picturesArray);
     openTab();
@@ -218,7 +221,7 @@ function getBreakTIme() {
 function authenticate() {
     var getRequest = new XMLHttpRequest();
     getRequest.open("GET", "https://www.toggl.com/api/v8/me", false);
-    getRequest.setRequestHeader("Authorization", 'Basic ' + btoa("8324y823yfdbfjsiawe3:api_token"));//<<<<---- replace token ID with your own from Toggl profile page
+    getRequest.setRequestHeader("Authorization", 'Basic ' + btoa(yourToken));//<<<<---- replace token ID with your own from Toggl profile page
     getRequest.send();
 
     wid = JSON.parse(getRequest.response)["wid"];

@@ -9,13 +9,6 @@ window.onload = function () {
     var stop = document.getElementById("stop");
     var reset = document.getElementById("reset");
 
-
-    /*var cyclesMax = document.getElementById("cycles");
-    var biggerRest = document.getElementById("restMultiply");
-    var durationSeconds = document.getElementById("duration");
-    var description = document.getElementById("goal");
-    var breakTime = document.getElementById("restTime");*/
-
     message = document.getElementById("message");
 
     state = "work";
@@ -70,7 +63,7 @@ window.onload = function () {
 
         goalDisplay.innerHTML = bkg.getDescription();
 
-        console.log("updaten")
+        console.log("updating")
     }
 
     //construct data that will be sent to Toggl API
@@ -114,6 +107,7 @@ window.onload = function () {
 
         bkg.start(durationSeconds, breakTime, makeData(), "work", "Work in progress", cyclesMax, biggerRest, description);
 
+        //also update minutesLeft and message on popup.html
         minutesLeft.innerHTML = bkg.getCurrentTime().toString();
         message.innerHTML = bkg.getCurrentMessage();
     }
